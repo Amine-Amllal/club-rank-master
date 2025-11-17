@@ -74,26 +74,47 @@ const Admin2 = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-background">
-      <header className="border-b bg-card shadow-sm">
-        <div className="container mx-auto flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-2">
-            <Settings className="h-6 w-6 text-accent" />
-            <h1 className="text-2xl font-bold text-primary">Assistant Panel</h1>
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Binary background animation */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-40">
+        {[...Array(10)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute text-neon-violet/20 font-mono text-xs animate-binary"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 8}s`,
+            }}
+          >
+            {Math.random() > 0.5 ? '1' : '0'}
           </div>
-          <Button onClick={handleSignOut} variant="outline" size="sm">
+        ))}
+      </div>
+
+      <header className="border-b-2 border-primary/30 bg-card/50 backdrop-blur-sm neon-glow relative z-10">
+        <div className="container mx-auto flex items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-full bg-primary/20 neon-glow">
+              <Settings className="h-6 w-6 text-primary" />
+            </div>
+            <h1 className="text-2xl font-bold uppercase tracking-wider">
+              <span className="text-primary text-glow">ASSISTANT</span> PANEL
+            </h1>
+          </div>
+          <Button onClick={handleSignOut} variant="outline" size="sm" className="uppercase">
             <LogOut className="mr-2 h-4 w-4" />
-            Sign Out
+            Disconnect
           </Button>
         </div>
       </header>
 
-      <main className="container mx-auto px-6 py-8">
-        <Card className="shadow-xl">
+      <main className="container mx-auto px-6 py-8 relative z-10">
+        <Card className="neon-glow-lg">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5 text-accent" />
-              Manage Points
+            <CardTitle className="flex items-center gap-2 text-2xl uppercase tracking-wide">
+              <Users className="h-6 w-6 text-primary" />
+              <span className="text-primary text-glow">MANAGE POINTS</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -101,43 +122,35 @@ const Admin2 = () => {
               {members.map((member) => (
                 <div
                   key={member.id}
-                  className="flex flex-col gap-4 rounded-lg border bg-card p-4 sm:flex-row sm:items-center sm:justify-between"
+                  className="flex flex-col gap-4 rounded-lg border-2 border-primary/30 bg-card/50 backdrop-blur-sm p-4 sm:flex-row sm:items-center sm:justify-between neon-glow hover:neon-glow-lg transition-all"
                 >
                   <div>
-                    <p className="font-semibold">{member.full_name || "Member"}</p>
-                    <p className="text-sm text-muted-foreground">{member.email}</p>
-                    <p className="mt-1 flex items-center gap-1 text-lg font-bold text-accent">
+                    <p className="font-bold uppercase text-lg">{member.full_name || "Member"}</p>
+                    <p className="text-sm text-muted-foreground uppercase tracking-wide">{member.email}</p>
+                    <p className="mt-1 flex items-center gap-1 text-lg font-bold text-primary text-glow">
                       <TrendingUp className="h-4 w-4" />
-                      {member.total_points} points
+                      {member.total_points} POINTS
                     </p>
                   </div>
                   <div className="flex gap-2">
                     <Input
                       type="number"
-                      placeholder="Points"
+                      placeholder="±"
                       value={pointsInput[member.id] || ""}
                       onChange={(e) =>
                         setPointsInput({ ...pointsInput, [member.id]: e.target.value })
                       }
-                      className="w-24"
+                      className="w-24 border-2 border-primary/30 bg-background/50 focus:border-primary uppercase"
                     />
                     <Button
                       onClick={() =>
-                        handleUpdatePoints(member.id, parseInt(pointsInput[member.id] || "0"))
+                        handleUpdatePoints(member.id, parseInt(pointsInput[member.id]) || 0)
                       }
-                      size="sm"
-                      variant="default"
-                    >
-                      Add
-                    </Button>
-                    <Button
-                      onClick={() =>
-                        handleUpdatePoints(member.id, -parseInt(pointsInput[member.id] || "0"))
-                      }
-                      size="sm"
                       variant="outline"
+                      size="sm"
+                      className="uppercase"
                     >
-                      Remove
+                      Update
                     </Button>
                   </div>
                 </div>
