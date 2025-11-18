@@ -96,7 +96,7 @@ const Leaderboard = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Trophy className="h-6 w-6 text-accent" />
-              Club Rankings
+              GENOS Rankings
             </CardTitle>
             <div className="mt-4">
               <div className="relative">

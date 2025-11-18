@@ -82,7 +82,7 @@ const Dashboard = () => {
       {/* Header */}
       <header className="border-b bg-card shadow-sm">
         <div className="container mx-auto flex items-center justify-between px-6 py-4">
-          <h1 className="text-2xl font-bold text-primary">Club Dashboard</h1>
+          <h1 className="text-2xl font-bold text-primary">GENOS Dashboard</h1>
           <Button onClick={handleSignOut} variant="outline" size="sm">
             <LogOut className="mr-2 h-4 w-4" />
             Sign Out
