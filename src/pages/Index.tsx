@@ -34,9 +34,9 @@ const Index = () => {
           </div>
           <h1 className="mb-8 text-6xl font-bold text-foreground md:text-7xl uppercase tracking-wider">
             <span className="inline-block bg-primary px-4 py-2 text-glow">WELCOME</span>{" "}
-            <span className="text-foreground">TO THE</span>
+            <span className="text-foreground">TO</span>
             <br />
-            <span className="text-primary text-glow">CLUB RANKING SYSTEM</span>
+            <span className="text-primary text-glow">GENOS</span>
           </h1>
           <p className="mb-10 text-xl text-muted-foreground max-w-3xl mx-auto uppercase tracking-wide">
             Enter the <span className="text-primary font-bold">digital arena</span> where members earn points, 
@@ -123,7 +123,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="border-t-2 border-primary/30 bg-card/30 backdrop-blur-sm py-8 px-6">
         <div className="container mx-auto text-center text-sm text-muted-foreground uppercase tracking-wider">
-          <p>&copy; 2025 CLUB RANKING SYSTEM. ALL RIGHTS RESERVED.</p>
+          <p>&copy; 2025 GENOS. ALL RIGHTS RESERVED.</p>
         </div>
       </footer>
     </div>

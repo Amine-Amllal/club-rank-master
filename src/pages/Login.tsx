@@ -115,7 +115,7 @@ const Login = () => {
             CONTROL
           </h2>
           <p className="mt-4 text-muted-foreground uppercase text-sm tracking-wide">
-            Sign in to access the club platform
+            Sign in to access GENOS
           </p>
         </div>
 
