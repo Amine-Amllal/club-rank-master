@@ -36,7 +36,7 @@ const Dashboard = () => {
       return;
     }
 
-    // Fetch user profile
+    
     const { data: profileData } = await supabase
       .from("profiles")
       .select("*")
@@ -45,7 +45,7 @@ const Dashboard = () => {
 
     setProfile(profileData);
 
-    // Fetch top 5 members for mini leaderboard
+    
     const { data: leaderboardData } = await supabase
       .from("profiles")
       .select("*")
@@ -105,12 +105,12 @@ const Dashboard = () => {
   }
 
   const top3 = topMembers.slice(0, 3);
-  // Ordre du podium: 2ème, 1er, 3ème
+ 
   const podiumOrder = top3.length >= 2 ? [top3[1], top3[0], top3[2]].filter(Boolean) : top3;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-background">
-      {/* Header */}
+      {}
       <header className="border-b bg-card shadow-sm">
         <div className="container mx-auto flex items-center justify-between px-6 py-4">
           <h1 className="text-2xl font-bold text-primary">GENOS Dashboard</h1>
@@ -121,10 +121,10 @@ const Dashboard = () => {
         </div>
       </header>
 
-      {/* Main Content */}
+      
       <main className="container mx-auto px-6 py-8">
         <div className="grid gap-6">
-          {/* Podium Section */}
+          
           <Card className="shadow-lg overflow-hidden">
             <CardHeader className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10">
               <CardTitle className="flex items-center justify-center gap-2 text-2xl">
@@ -144,12 +144,12 @@ const Dashboard = () => {
                         className="flex flex-col items-center gap-3 animate-in fade-in-50 zoom-in-95 duration-500"
                         style={{ animationDelay: `${actualRank * 150}ms` }}
                       >
-                        {/* Icon au-dessus */}
+                       
                         <div className="mb-2">
                           {getPodiumIcon(actualRank)}
                         </div>
                         
-                        {/* Avatar */}
+                       
                         <Avatar className={`${actualRank === 1 ? 'h-24 w-24 ring-4 ring-yellow-400' : actualRank === 2 ? 'h-20 w-20 ring-4 ring-gray-400' : 'h-16 w-16 ring-4 ring-amber-600'} ring-offset-2 ring-offset-background transition-transform hover:scale-110`}>
                           <AvatarImage src={member.avatar_url || ""} />
                           <AvatarFallback className={`${actualRank === 1 ? 'bg-yellow-500 text-white text-3xl' : actualRank === 2 ? 'bg-gray-400 text-white text-2xl' : 'bg-amber-600 text-white text-xl'} font-bold`}>
@@ -157,7 +157,7 @@ const Dashboard = () => {
                           </AvatarFallback>
                         </Avatar>
 
-                        {/* Nom et points */}
+                        
                         <div className="text-center mb-2">
                           <p className={`font-bold ${actualRank === 1 ? 'text-lg' : 'text-base'} truncate max-w-[120px]`}>
                             {member.full_name || member.email.split('@')[0]}
@@ -167,7 +167,7 @@ const Dashboard = () => {
                           </p>
                         </div>
 
-                        {/* Piédestal */}
+                        
                         <div className={`${getPodiumHeight(actualRank)} w-32 bg-gradient-to-b ${getPodiumColor(actualRank)} rounded-t-lg border-2 flex items-center justify-center transition-all hover:brightness-110`}>
                           <span className={`text-5xl font-black ${actualRank === 1 ? 'text-yellow-400' : actualRank === 2 ? 'text-gray-300' : 'text-amber-500'} opacity-30`}>
                             {actualRank}
@@ -185,9 +185,9 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Profile and Leaderboard Grid */}
+        
           <div className="grid gap-6 md:grid-cols-2">
-            {/* Profile Card */}
+           
             <Card className="shadow-lg">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -217,7 +217,7 @@ const Dashboard = () => {
               </CardContent>
             </Card>
 
-            {/* Mini Leaderboard */}
+            
             <Card className="shadow-lg">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
