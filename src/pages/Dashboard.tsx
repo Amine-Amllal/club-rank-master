@@ -4,8 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Trophy, TrendingUp, LogOut, Crown, Medal, Award } from "lucide-react";
+import { Trophy, TrendingUp, LogOut, Crown, Medal, Award, Settings } from "lucide-react";
 import { toast } from "sonner";
+import type { Database } from "@/integrations/supabase/types";
 
 interface Profile {
   id: string;
@@ -24,6 +25,7 @@ const Dashboard = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [topMembers, setTopMembers] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState<Database["public"]["Enums"]["app_role"] | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -44,6 +46,17 @@ const Dashboard = () => {
       .single();
 
     setProfile(profileData);
+
+    // Fetch user role
+    const { data: roleData } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", user.id)
+      .single();
+
+    if (roleData) {
+      setUserRole(roleData.role);
+    }
 
     
     const { data: leaderboardData } = await supabase
@@ -67,6 +80,16 @@ const Dashboard = () => {
     await supabase.auth.signOut();
     toast.success("Signed out successfully");
     navigate("/login");
+  };
+
+  const handleAdminPanel = () => {
+    if (userRole === "admin0") {
+      navigate("/admin0");
+    } else if (userRole === "admin1") {
+      navigate("/admin1");
+    } else if (userRole === "admin2") {
+      navigate("/admin2");
+    }
   };
 
   const getPodiumHeight = (rank: number) => {
@@ -114,10 +137,18 @@ const Dashboard = () => {
       <header className="border-b bg-card shadow-sm">
         <div className="container mx-auto flex items-center justify-between px-6 py-4">
           <h1 className="text-2xl font-bold text-primary">GENOS Dashboard</h1>
-          <Button onClick={handleSignOut} variant="outline" size="sm">
-            <LogOut className="mr-2 h-4 w-4" />
-            Sign Out
-          </Button>
+          <div className="flex items-center gap-3">
+            {userRole && ["admin0", "admin1", "admin2"].includes(userRole) && (
+              <Button onClick={handleAdminPanel} variant="outline" size="sm">
+                <Settings className="mr-2 h-4 w-4" />
+                Admin Panel
+              </Button>
+            )}
+            <Button onClick={handleSignOut} variant="outline" size="sm">
+              <LogOut className="mr-2 h-4 w-4" />
+              Sign Out
+            </Button>
+          </div>
         </div>
       </header>
 
