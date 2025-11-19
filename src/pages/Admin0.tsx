@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { LogOut, Users, Shield, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 
@@ -12,6 +13,7 @@ interface Profile {
   email: string;
   full_name: string | null;
   total_points: number;
+  role?: string;
 }
 
 const Admin0 = () => {
@@ -24,13 +26,21 @@ const Admin0 = () => {
   }, []);
 
   const fetchMembers = async () => {
-    const { data } = await supabase
+    const { data: profilesData } = await supabase
       .from("profiles")
       .select("*")
       .order("total_points", { ascending: false });
 
-    if (data) {
-      setMembers(data);
+    if (profilesData) {
+      const profilesWithRoles = await Promise.all(
+        profilesData.map(async (profile) => {
+          const { data: roleData } = await supabase.rpc("get_user_role", {
+            _user_id: profile.id,
+          });
+          return { ...profile, role: roleData || "member" };
+        })
+      );
+      setMembers(profilesWithRoles);
     }
   };
 
@@ -65,6 +75,39 @@ const Admin0 = () => {
       toast.success("Points updated successfully");
       fetchMembers();
       setPointsInput({ ...pointsInput, [userId]: "" });
+    }
+  };
+
+  const handleUpdateRole = async (userId: string, newRole: string) => {
+    if (newRole === "admin0") {
+      toast.error("Cannot assign admin0 role from interface");
+      return;
+    }
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { error: deleteError } = await supabase
+      .from("user_roles")
+      .delete()
+      .eq("user_id", userId);
+
+    if (deleteError) {
+      toast.error("Failed to update role");
+      return;
+    }
+
+    const { error: insertError } = await supabase.from("user_roles").insert([{
+      user_id: userId,
+      role: newRole as "admin0" | "admin1" | "admin2" | "member",
+      assigned_by: user.id,
+    }]);
+
+    if (insertError) {
+      toast.error("Failed to update role");
+    } else {
+      toast.success(`Role updated to ${newRole}`);
+      fetchMembers();
     }
   };
 
@@ -142,6 +185,22 @@ const Admin0 = () => {
                       <TrendingUp className="h-4 w-4" />
                       {member.total_points} POINTS
                     </p>
+                    <div className="mt-2 flex items-center gap-2">
+                      <span className="text-xs uppercase tracking-wide text-muted-foreground">Role:</span>
+                      <Select
+                        value={member.role || "member"}
+                        onValueChange={(value) => handleUpdateRole(member.id, value)}
+                      >
+                        <SelectTrigger className="w-32 h-8 border-primary/30 bg-background/50 text-xs uppercase">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="member">Member</SelectItem>
+                          <SelectItem value="admin2">Admin2</SelectItem>
+                          <SelectItem value="admin1">Admin1</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                   <div className="flex gap-2 flex-wrap">
                     <div className="flex gap-2">
