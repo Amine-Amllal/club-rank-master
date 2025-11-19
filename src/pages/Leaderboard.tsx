@@ -45,7 +45,11 @@ const Leaderboard = () => {
   const fetchLeaderboard = async () => {
     const { data } = await supabase
       .from("profiles")
-      .select("*")
+      .select(`
+        *,
+        user_roles!inner(role)
+      `)
+      .eq("user_roles.role", "member")
       .order("total_points", { ascending: false });
 
     if (data) {
