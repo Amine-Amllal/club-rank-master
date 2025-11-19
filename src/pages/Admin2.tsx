@@ -102,10 +102,16 @@ const Admin2 = () => {
               <span className="text-primary text-glow">ASSISTANT</span> PANEL
             </h1>
           </div>
-          <Button onClick={handleSignOut} variant="outline" size="sm" className="uppercase">
-            <LogOut className="mr-2 h-4 w-4" />
-            Disconnect
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button onClick={() => navigate("/dashboard")} variant="outline" size="sm" className="uppercase">
+              <Users className="mr-2 h-4 w-4" />
+              Member View
+            </Button>
+            <Button onClick={handleSignOut} variant="outline" size="sm" className="uppercase">
+              <LogOut className="mr-2 h-4 w-4" />
+              Disconnect
+            </Button>
+          </div>
         </div>
       </header>
 
