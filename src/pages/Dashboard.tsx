@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Trophy, TrendingUp, LogOut } from "lucide-react";
+import { Trophy, TrendingUp, LogOut, Crown, Medal, Award } from "lucide-react";
 import { toast } from "sonner";
 
 interface Profile {
@@ -69,6 +69,33 @@ const Dashboard = () => {
     navigate("/login");
   };
 
+  const getPodiumHeight = (rank: number) => {
+    switch(rank) {
+      case 1: return "h-40";
+      case 2: return "h-32";
+      case 3: return "h-24";
+      default: return "h-20";
+    }
+  };
+
+  const getPodiumIcon = (rank: number) => {
+    switch(rank) {
+      case 1: return <Crown className="h-8 w-8 text-yellow-400" />;
+      case 2: return <Medal className="h-7 w-7 text-gray-400" />;
+      case 3: return <Award className="h-6 w-6 text-amber-600" />;
+      default: return null;
+    }
+  };
+
+  const getPodiumColor = (rank: number) => {
+    switch(rank) {
+      case 1: return "from-yellow-500/20 to-yellow-600/20 border-yellow-500/50";
+      case 2: return "from-gray-400/20 to-gray-500/20 border-gray-400/50";
+      case 3: return "from-amber-600/20 to-amber-700/20 border-amber-600/50";
+      default: return "from-secondary to-secondary/50";
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -76,6 +103,10 @@ const Dashboard = () => {
       </div>
     );
   }
+
+  const top3 = topMembers.slice(0, 3);
+  // Ordre du podium: 2ème, 1er, 3ème
+  const podiumOrder = top3.length >= 2 ? [top3[1], top3[0], top3[2]].filter(Boolean) : top3;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-background">
@@ -92,80 +123,149 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-6 py-8">
-        <div className="grid gap-6 md:grid-cols-2">
-          {/* Profile Card */}
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-accent" />
-                Your Profile
+        <div className="grid gap-6">
+          {/* Podium Section */}
+          <Card className="shadow-lg overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10">
+              <CardTitle className="flex items-center justify-center gap-2 text-2xl">
+                <Trophy className="h-6 w-6 text-accent" />
+                Podium des Champions
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-4">
-                <Avatar className="h-20 w-20">
-                  <AvatarImage src={profile?.avatar_url || ""} />
-                  <AvatarFallback className="bg-primary text-primary-foreground text-2xl">
-                    {profile?.full_name?.[0] || profile?.email[0].toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <h3 className="text-xl font-semibold">{profile?.full_name || "Member"}</h3>
-                  <p className="text-sm text-muted-foreground">{profile?.email}</p>
-                  <div className="mt-2 flex items-center gap-2">
-                    <Trophy className="h-5 w-5 text-accent" />
-                    <span className="text-2xl font-bold text-primary">
-                      {profile?.total_points} points
-                    </span>
-                  </div>
+            <CardContent className="p-8">
+              {top3.length > 0 ? (
+                <div className="flex items-end justify-center gap-4">
+                  {podiumOrder.map((member) => {
+                    if (!member) return null;
+                    const actualRank = member.rank;
+                    return (
+                      <div
+                        key={member.id}
+                        className="flex flex-col items-center gap-3 animate-in fade-in-50 zoom-in-95 duration-500"
+                        style={{ animationDelay: `${actualRank * 150}ms` }}
+                      >
+                        {/* Icon au-dessus */}
+                        <div className="mb-2">
+                          {getPodiumIcon(actualRank)}
+                        </div>
+                        
+                        {/* Avatar */}
+                        <Avatar className={`${actualRank === 1 ? 'h-24 w-24 ring-4 ring-yellow-400' : actualRank === 2 ? 'h-20 w-20 ring-4 ring-gray-400' : 'h-16 w-16 ring-4 ring-amber-600'} ring-offset-2 ring-offset-background transition-transform hover:scale-110`}>
+                          <AvatarImage src={member.avatar_url || ""} />
+                          <AvatarFallback className={`${actualRank === 1 ? 'bg-yellow-500 text-white text-3xl' : actualRank === 2 ? 'bg-gray-400 text-white text-2xl' : 'bg-amber-600 text-white text-xl'} font-bold`}>
+                            {member.full_name?.[0] || member.email[0].toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+
+                        {/* Nom et points */}
+                        <div className="text-center mb-2">
+                          <p className={`font-bold ${actualRank === 1 ? 'text-lg' : 'text-base'} truncate max-w-[120px]`}>
+                            {member.full_name || member.email.split('@')[0]}
+                          </p>
+                          <p className={`font-bold ${actualRank === 1 ? 'text-yellow-500 text-xl' : actualRank === 2 ? 'text-gray-400 text-lg' : 'text-amber-600'}`}>
+                            {member.total_points} pts
+                          </p>
+                        </div>
+
+                        {/* Piédestal */}
+                        <div className={`${getPodiumHeight(actualRank)} w-32 bg-gradient-to-b ${getPodiumColor(actualRank)} rounded-t-lg border-2 flex items-center justify-center transition-all hover:brightness-110`}>
+                          <span className={`text-5xl font-black ${actualRank === 1 ? 'text-yellow-400' : actualRank === 2 ? 'text-gray-300' : 'text-amber-500'} opacity-30`}>
+                            {actualRank}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-              </div>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  Aucun membre dans le classement pour le moment
+                </div>
+              )}
             </CardContent>
           </Card>
 
-          {/* Mini Leaderboard */}
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span className="flex items-center gap-2">
-                  <Trophy className="h-5 w-5 text-accent" />
-                  Top Members
-                </span>
-                <Button
-                  onClick={() => navigate("/leaderboard")}
-                  variant="ghost"
-                  size="sm"
-                  className="text-accent hover:text-accent/90"
-                >
-                  View All
-                </Button>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {topMembers.map((member) => (
-                  <div
-                    key={member.id}
-                    className="flex items-center justify-between rounded-lg bg-secondary/50 p-3"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold">
-                        {member.rank}
+          {/* Profile and Leaderboard Grid */}
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Profile Card */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-accent" />
+                  Your Profile
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-4">
+                  <Avatar className="h-20 w-20">
+                    <AvatarImage src={profile?.avatar_url || ""} />
+                    <AvatarFallback className="bg-primary text-primary-foreground text-2xl">
+                      {profile?.full_name?.[0] || profile?.email[0].toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h3 className="text-xl font-semibold">{profile?.full_name || "Member"}</h3>
+                    <p className="text-sm text-muted-foreground">{profile?.email}</p>
+                    <div className="mt-2 flex items-center gap-2">
+                      <Trophy className="h-5 w-5 text-accent" />
+                      <span className="text-2xl font-bold text-primary">
+                        {profile?.total_points} points
                       </span>
-                      <Avatar>
-                        <AvatarImage src={member.avatar_url || ""} />
-                        <AvatarFallback>
-                          {member.full_name?.[0] || member.email[0].toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="font-medium">{member.full_name || member.email}</span>
                     </div>
-                    <span className="font-bold text-accent">{member.total_points} pts</span>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Mini Leaderboard */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <Trophy className="h-5 w-5 text-accent" />
+                    Top Members
+                  </span>
+                  <Button
+                    onClick={() => navigate("/leaderboard")}
+                    variant="ghost"
+                    size="sm"
+                    className="text-accent hover:text-accent/90"
+                  >
+                    View All
+                  </Button>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {topMembers.map((member) => (
+                    <div
+                      key={member.id}
+                      className="flex items-center justify-between rounded-lg bg-secondary/50 p-3 transition-all hover:bg-secondary/70"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className={`flex h-8 w-8 items-center justify-center rounded-full font-bold ${
+                          member.rank === 1 ? 'bg-yellow-500 text-white' : 
+                          member.rank === 2 ? 'bg-gray-400 text-white' : 
+                          member.rank === 3 ? 'bg-amber-600 text-white' : 
+                          'bg-primary text-primary-foreground'
+                        }`}>
+                          {member.rank}
+                        </span>
+                        <Avatar>
+                          <AvatarImage src={member.avatar_url || ""} />
+                          <AvatarFallback>
+                            {member.full_name?.[0] || member.email[0].toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="font-medium">{member.full_name || member.email}</span>
+                      </div>
+                      <span className="font-bold text-accent">{member.total_points} pts</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </main>
     </div>
