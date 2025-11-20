@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Leaderboard from "./pages/Leaderboard";
+import Profile from "./pages/Profile";
 import Admin0 from "./pages/Admin0";
 import Admin1 from "./pages/Admin1";
 import Admin2 from "./pages/Admin2";
@@ -39,6 +40,14 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <Leaderboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/profile/:userId" 
+            element={
+              <ProtectedRoute>
+                <Profile />
               </ProtectedRoute>
             } 
           />

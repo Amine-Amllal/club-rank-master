@@ -193,8 +193,9 @@ const Dashboard = () => {
                     return (
                       <div
                         key={member.id}
-                        className="flex flex-col items-center gap-3 animate-in fade-in-50 zoom-in-95 duration-500"
+                        className="flex flex-col items-center gap-3 animate-in fade-in-50 zoom-in-95 duration-500 cursor-pointer"
                         style={{ animationDelay: `${actualRank * 150}ms` }}
+                        onClick={() => navigate(`/profile/${member.id}`)}
                       >
                        
                         <div className="mb-2">
@@ -292,7 +293,8 @@ const Dashboard = () => {
                   {topMembers.map((member) => (
                     <div
                       key={member.id}
-                      className="flex items-center justify-between rounded-lg bg-secondary/50 p-3 transition-all hover:bg-secondary/70"
+                      className="flex items-center justify-between rounded-lg bg-secondary/50 p-3 transition-all hover:bg-secondary/70 cursor-pointer"
+                      onClick={() => navigate(`/profile/${member.id}`)}
                     >
                       <div className="flex items-center gap-3">
                         <span className={`flex h-8 w-8 items-center justify-center rounded-full font-bold ${

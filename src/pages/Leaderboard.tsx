@@ -140,7 +140,8 @@ const Leaderboard = () => {
                 filteredMembers.map((member) => (
                   <div
                     key={member.id}
-                    className="flex items-center justify-between rounded-lg border bg-card p-4 transition-all hover:shadow-md hover:scale-[1.01]"
+                    className="flex items-center justify-between rounded-lg border bg-card p-4 transition-all hover:shadow-md hover:scale-[1.01] cursor-pointer"
+                    onClick={() => navigate(`/profile/${member.id}`)}
                   >
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-2">
