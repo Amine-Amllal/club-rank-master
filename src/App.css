@@ -5,6 +5,14 @@
   text-align: center;
 }
 
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  #root {
+    max-width: 100%;
+    padding: 1rem;
+  }
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -35,6 +43,13 @@
 
 .card {
   padding: 2em;
+}
+
+/* Mobile card adjustments */
+@media (max-width: 768px) {
+  .card {
+    padding: 1em;
+  }
 }
 
 .read-the-docs {
