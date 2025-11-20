@@ -88,10 +88,14 @@ const Admin1 = () => {
   };
 
   const handleKickMember = async (userId: string) => {
-    const { error } = await supabase.from("profiles").delete().eq("id", userId);
+    // Use RPC function to delete user with proper permissions
+    const { data, error } = await supabase.rpc('delete_user_as_admin', {
+      target_user_id: userId
+    });
 
     if (error) {
-      toast.error("Failed to remove member");
+      console.error("Error removing member:", error);
+      toast.error(`Failed to remove member: ${error.message}`);
     } else {
       toast.success("Member removed successfully");
       fetchMembers();
