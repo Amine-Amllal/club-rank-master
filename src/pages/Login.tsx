@@ -3,9 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useSEO } from "@/hooks/useSEO";
+import { PAGE_SEO, generatePageMeta } from "@/lib/seo-config";
 
 const Login = () => {
   const navigate = useNavigate();
+
+  // SEO optimization for login page
+  const seoMeta = generatePageMeta(PAGE_SEO.login);
+  useSEO({
+    ...seoMeta,
+    ogType: 'website',
+  });
 
   useEffect(() => {
     const checkUser = async () => {
@@ -81,7 +90,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center relative overflow-hidden">
+    <div className="flex min-h-screen items-center justify-center relative overflow-hidden" role="main">
       {/* Binary background animation */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {[...Array(30)].map((_, i) => (
@@ -101,7 +110,7 @@ const Login = () => {
 
       <div className="w-full max-w-md space-y-8 rounded-2xl border-2 border-primary/50 bg-card/60 backdrop-blur-md p-10 neon-glow-lg relative z-10">
         <div className="text-center">
-          <div className="mb-6 flex justify-center">
+          <div className="mb-6 flex justify-center" aria-hidden="true">
             <div className="rounded-full bg-primary/20 p-6 neon-glow animate-pulse-neon">
               <svg className="h-12 w-12 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />

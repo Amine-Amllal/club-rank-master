@@ -7,6 +7,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Trophy, TrendingUp, LogOut, Crown, Medal, Award, Settings } from "lucide-react";
 import { toast } from "sonner";
 import type { Database } from "@/integrations/supabase/types";
+import { useSEO } from "@/hooks/useSEO";
+import { PAGE_SEO, generatePageMeta } from "@/lib/seo-config";
 
 interface Profile {
   id: string;
@@ -26,6 +28,14 @@ const Dashboard = () => {
   const [topMembers, setTopMembers] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<Database["public"]["Enums"]["app_role"] | null>(null);
+
+  // SEO optimization for dashboard page
+  const seoMeta = generatePageMeta(PAGE_SEO.dashboard);
+  useSEO({
+    ...seoMeta,
+    ogType: 'website',
+    noindex: true, // Dashboard is private, should not be indexed
+  });
 
   useEffect(() => {
     fetchData();
@@ -153,20 +163,20 @@ const Dashboard = () => {
   const podiumOrder = top3.length >= 2 ? [top3[1], top3[0], top3[2]].filter(Boolean) : top3;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-background" role="main">
       {}
-      <header className="border-b bg-card shadow-sm">
+      <header className="border-b bg-card shadow-sm" role="banner">
         <div className="container mx-auto flex items-center justify-between px-6 py-4">
           <h1 className="text-2xl font-bold text-primary">GENOS Dashboard</h1>
           <div className="flex items-center gap-3">
             {userRole && ["admin0", "admin1", "admin2"].includes(userRole) && (
-              <Button onClick={handleAdminPanel} variant="outline" size="sm">
-                <Settings className="mr-2 h-4 w-4" />
+              <Button onClick={handleAdminPanel} variant="outline" size="sm" aria-label="Go to Admin Panel">
+                <Settings className="mr-2 h-4 w-4" aria-hidden="true" />
                 Admin Panel
               </Button>
             )}
-            <Button onClick={handleSignOut} variant="outline" size="sm">
-              <LogOut className="mr-2 h-4 w-4" />
+            <Button onClick={handleSignOut} variant="outline" size="sm" aria-label="Sign out">
+              <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
               Sign Out
             </Button>
           </div>

@@ -1,73 +1,153 @@
-# Welcome to your Lovable project
+# GENOS Leaderboard
 
-## Project info
+Official gamified leaderboard platform for GENOS, the Artificial Intelligence Club at ENSAM Meknès.
 
-**URL**: https://lovable.dev/projects/0a248dae-ad43-437e-b479-40964c84d313
+## About GENOS
 
-## How can I edit this code?
+GENOS is the AI Club at École Nationale Supérieure d'Arts et Métiers (ENSAM) Meknès, dedicated to fostering innovation, learning, and collaboration among AI enthusiasts and engineering students.
 
-There are several ways of editing your application.
+## About This Platform
 
-**Use Lovable**
+The GENOS Leaderboard is a web application designed to:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/0a248dae-ad43-437e-b479-40964c84d313) and start prompting.
+- **Track member points** based on participation and contributions
+- **Rank members** on a competitive leaderboard
+- **Boost engagement** through gamification
+- **Celebrate achievements** and milestones
+- **Foster community** among AI club members
 
-Changes made via Lovable will be committed automatically to this repo.
+## Features
 
-**Use your preferred IDE**
+- 🏆 **Real-time Leaderboard** - Live rankings of all members
+- 📊 **Member Dashboard** - Personal stats and progress tracking
+- 👤 **Member Profiles** - Detailed view of achievements and point history
+- 🔐 **Secure Authentication** - ENSAM email-based login (@edu.umi.ac.ma)
+- ⚡ **Admin Panel** - Point management and member administration
+- 📱 **Responsive Design** - Works seamlessly on all devices
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Tech Stack
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- **Frontend**: React 18 + TypeScript
+- **Build Tool**: Vite
+- **UI Framework**: Tailwind CSS + shadcn/ui
+- **Backend**: Supabase (PostgreSQL + Auth)
+- **Hosting**: Vercel
+- **Analytics**: Vercel Analytics
 
-Follow these steps:
+## Getting Started
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+### Prerequisites
+
+- Node.js 18+ and npm
+- Git
+
+### Installation
+
+1. Clone the repository:
+```bash
 git clone <YOUR_GIT_URL>
+cd club-rank-master
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+2. Install dependencies:
+```bash
+npm install
+```
 
-# Step 3: Install the necessary dependencies.
-npm i
+3. Set up environment variables:
+Create a `.env.local` file with your Supabase credentials:
+```env
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+4. Start the development server:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The application will be available at `http://localhost:8080`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Development
 
-**Use GitHub Codespaces**
+```bash
+# Development server with hot reload
+npm run dev
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Build for production
+npm run build
 
-## What technologies are used for this project?
+# Preview production build
+npm run preview
 
-This project is built with:
+# Lint code
+npm run lint
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Project Structure
 
-## How can I deploy this project?
+```
+club-rank-master/
+├── public/              # Static files
+│   ├── sitemap.xml     # SEO sitemap
+│   └── robots.txt      # Search engine directives
+├── src/
+│   ├── components/     # Reusable UI components
+│   ├── hooks/          # Custom React hooks (including SEO)
+│   ├── integrations/   # External services (Supabase)
+│   ├── lib/            # Utilities and configurations
+│   ├── pages/          # Application pages/routes
+│   └── App.tsx         # Main application component
+└── package.json
+```
 
-Simply open [Lovable](https://lovable.dev/projects/0a248dae-ad43-437e-b479-40964c84d313) and click on Share -> Publish.
+## SEO Optimization
 
-## Can I connect a custom domain to my Lovable project?
+This project includes comprehensive SEO features:
 
-Yes, you can!
+- **Meta Tags**: Dynamic title, description, keywords per page
+- **Open Graph**: Social media sharing optimization
+- **Twitter Cards**: Enhanced Twitter sharing
+- **Structured Data**: JSON-LD for Organization, WebApplication schemas
+- **Sitemap**: XML sitemap for search engines
+- **Robots.txt**: Proper crawling directives
+- **Semantic HTML**: ARIA labels and proper heading hierarchy
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Authentication
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Only users with `@edu.umi.ac.ma` email addresses can access the platform. Authentication is handled through Google OAuth via Supabase.
+
+## Deployment
+
+The application is configured for deployment on Vercel:
+
+```bash
+# Build the project
+npm run build
+
+# Deploy to Vercel
+vercel deploy
+```
+
+## Contributing
+
+This is an internal project for GENOS members. If you're a member and want to contribute:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## License
+
+Copyright © 2025 GENOS - AI Club ENSAM Meknès. All rights reserved.
+
+## Contact
+
+For questions or support:
+- Email: [Your club email]
+- GitHub: [Your repository]
+
+---
+
+**Built with ❤️ by GENOS for the AI community at ENSAM Meknès**

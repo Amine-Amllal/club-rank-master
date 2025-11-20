@@ -1,12 +1,21 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Trophy, Users, TrendingUp, Star } from "lucide-react";
+import { useSEO } from "@/hooks/useSEO";
+import { PAGE_SEO, generatePageMeta } from "@/lib/seo-config";
 
 const Index = () => {
   const navigate = useNavigate();
+  
+  // SEO optimization for homepage
+  const seoMeta = generatePageMeta(PAGE_SEO.home);
+  useSEO({
+    ...seoMeta,
+    ogType: 'website',
+  });
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden" role="main">
       {/* Binary background animation */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {[...Array(20)].map((_, i) => (
@@ -25,14 +34,14 @@ const Index = () => {
       </div>
 
       {/* Hero Section */}
-      <section className="relative py-24 px-6">
+      <section className="relative py-24 px-6" aria-labelledby="hero-heading">
         <div className="container mx-auto text-center">
-          <div className="mb-8 flex justify-center">
+          <div className="mb-8 flex justify-center" aria-hidden="true">
             <div className="rounded-full bg-primary/20 p-8 neon-glow-lg animate-pulse-neon">
               <Trophy className="h-20 w-20 text-primary" />
             </div>
           </div>
-          <h1 className="mb-8 text-6xl font-bold text-foreground md:text-7xl uppercase tracking-wider">
+          <h1 id="hero-heading" className="mb-8 text-6xl font-bold text-foreground md:text-7xl uppercase tracking-wider">
             <span className="inline-block bg-primary px-4 py-2 text-glow">WELCOME</span>{" "}
             <span className="text-foreground">TO</span>
             <br />
@@ -53,9 +62,9 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-6 relative">
+      <section className="py-20 px-6 relative" aria-labelledby="features-heading">
         <div className="container mx-auto">
-          <h2 className="text-5xl font-bold text-center mb-16 uppercase tracking-wider">
+          <h2 id="features-heading" className="text-5xl font-bold text-center mb-16 uppercase tracking-wider">
             <span className="bg-primary px-6 py-2 text-glow inline-block">SYSTEM</span>{" "}
             <span className="text-primary text-glow">FEATURES</span>
           </h2>
@@ -100,9 +109,9 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-6 relative">
+      <section className="py-20 px-6 relative" aria-labelledby="cta-heading">
         <div className="container mx-auto text-center">
-          <h2 className="mb-8 text-5xl font-bold uppercase tracking-wider">
+          <h2 id="cta-heading" className="mb-8 text-5xl font-bold uppercase tracking-wider">
             <span className="text-primary text-glow">READY TO</span>{" "}
             <span className="bg-primary px-6 py-2 text-glow inline-block">CONNECT?</span>
           </h2>
@@ -121,9 +130,12 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t-2 border-primary/30 bg-card/30 backdrop-blur-sm py-8 px-6">
+      <footer className="border-t-2 border-primary/30 bg-card/30 backdrop-blur-sm py-8 px-6" role="contentinfo">
         <div className="container mx-auto text-center text-sm text-muted-foreground uppercase tracking-wider">
-          <p>&copy; 2025 GENOS. ALL RIGHTS RESERVED.</p>
+          <p>&copy; 2025 GENOS - AI Club ENSAM Meknès. ALL RIGHTS RESERVED.</p>
+          <p className="mt-2 text-xs">
+            Gamified leaderboard platform for AI enthusiasts and engineering students
+          </p>
         </div>
       </footer>
     </div>

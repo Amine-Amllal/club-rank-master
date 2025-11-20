@@ -1,14 +1,50 @@
+# GENOS Leaderboard - Robots Configuration
+# AI Club ENSAM Meknès
+
+# Allow all major search engines
 User-agent: Googlebot
 Allow: /
+Allow: /leaderboard
+Disallow: /dashboard
+Disallow: /profile/
+Disallow: /admin*
 
 User-agent: Bingbot
 Allow: /
+Allow: /leaderboard
+Disallow: /dashboard
+Disallow: /profile/
+Disallow: /admin*
 
 User-agent: Twitterbot
 Allow: /
+Allow: /leaderboard
+Disallow: /dashboard
+Disallow: /profile/
+Disallow: /admin*
 
 User-agent: facebookexternalhit
 Allow: /
+Allow: /leaderboard
+Disallow: /dashboard
+Disallow: /profile/
+Disallow: /admin*
 
+# Default rule for all other bots
 User-agent: *
 Allow: /
+Allow: /login
+Allow: /leaderboard
+Disallow: /dashboard
+Disallow: /profile/
+Disallow: /admin*
+Disallow: /admin0
+Disallow: /admin1
+Disallow: /admin2
+
+# Crawl delay (polite crawling)
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://genos-leaderboard.vercel.app/sitemap.xml
+

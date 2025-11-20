@@ -1,8 +1,10 @@
 {
-  "name": "vite_react_shadcn_ts",
+  "name": "genos-leaderboard",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "Official gamified leaderboard platform for GENOS AI Club at ENSAM Meknès",
+  "author": "GENOS - AI Club ENSAM Meknès",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

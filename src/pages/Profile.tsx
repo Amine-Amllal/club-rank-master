@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Trophy, TrendingUp, TrendingDown, Calendar, User } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { useSEO } from "@/hooks/useSEO";
+import { PAGE_SEO, generatePageMeta, generatePersonSchema } from "@/lib/seo-config";
 
 interface Profile {
   id: string;
@@ -37,6 +39,20 @@ const Profile = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [activities, setActivities] = useState<ActivityWithPerformer[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // SEO optimization for profile page
+  const seoMeta = generatePageMeta({
+    ...PAGE_SEO.profile,
+    title: profile ? `${profile.full_name || 'Member'} - Profile` : PAGE_SEO.profile.title,
+    description: profile 
+      ? `View ${profile.full_name || profile.email}'s profile on GENOS Leaderboard. ${profile.total_points} points earned at ENSAM Meknès AI Club.`
+      : PAGE_SEO.profile.description,
+  });
+  
+  useSEO({
+    ...seoMeta,
+    ogType: 'profile',
+  });
 
   useEffect(() => {
     if (userId) {
@@ -128,9 +144,9 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-background" role="main">
       {/* Header */}
-      <header className="border-b bg-card shadow-sm">
+      <header className="border-b bg-card shadow-sm" role="banner">
         <div className="container mx-auto flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
             <Button

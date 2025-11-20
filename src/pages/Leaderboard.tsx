@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Trophy, Search, ArrowLeft, Medal } from "lucide-react";
+import { useSEO } from "@/hooks/useSEO";
+import { PAGE_SEO, generatePageMeta, generateBreadcrumbs } from "@/lib/seo-config";
 
 interface Profile {
   id: string;
@@ -24,6 +26,13 @@ const Leaderboard = () => {
   const [members, setMembers] = useState<LeaderboardEntry[]>([]);
   const [filteredMembers, setFilteredMembers] = useState<LeaderboardEntry[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+
+  // SEO optimization for leaderboard page
+  const seoMeta = generatePageMeta(PAGE_SEO.leaderboard);
+  useSEO({
+    ...seoMeta,
+    ogType: 'website',
+  });
 
   useEffect(() => {
     fetchLeaderboard();
@@ -94,15 +103,16 @@ const Leaderboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-background" role="main">
       {/* Header */}
-      <header className="border-b bg-card shadow-sm">
+      <header className="border-b bg-card shadow-sm" role="banner">
         <div className="container mx-auto flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
             <Button
               onClick={() => navigate("/dashboard")}
               variant="ghost"
               size="sm"
+              aria-label="Back to Dashboard"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back
@@ -117,17 +127,21 @@ const Leaderboard = () => {
         <Card className="shadow-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Trophy className="h-6 w-6 text-accent" />
-              GENOS Rankings
+              <Trophy className="h-6 w-6 text-accent" aria-hidden="true" />
+              GENOS Rankings - AI Club ENSAM Meknès
             </CardTitle>
+            <p className="text-sm text-muted-foreground mt-2">
+              Compete with fellow AI enthusiasts and track your progress in the GENOS community
+            </p>
             <div className="mt-4">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
                 <Input
-                  placeholder="Search members..."
+                  placeholder="Search members by name or email..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
+                  aria-label="Search members"
                 />
               </div>
             </div>
