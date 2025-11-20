@@ -220,7 +220,7 @@ const Admin0 = () => {
               <span className="text-primary text-glow">MANAGE ALL MEMBERS</span>
             </CardTitle>
             
-            {/* Barre de recherche */}
+            
             <div className="mt-4 relative">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -291,7 +291,7 @@ const Admin0 = () => {
                         </div>
                       </div>
 
-                      {/* Bouton Remove */}
+                      
                       <Button
                         onClick={() => handleKickMember(member.id)}
                         variant="destructive"
