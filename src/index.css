@@ -118,7 +118,7 @@ All colors MUST be HSL.
     /* Desktop background */
     background-image: 
       linear-gradient(135deg, hsla(282, 61%, 17%, 0.25), hsla(0, 0%, 0%, 0.2)),
-      url("Capture d'écran 2025-11-21 000158.png");
+      url("/Capture d'écran 2025-11-21 000158.png");
     background-size: 
       100% 100%,
       cover;
@@ -133,7 +133,7 @@ All colors MUST be HSL.
     body {
       background-image: 
         linear-gradient(135deg, hsla(282, 61%, 17%, 0.3), hsla(0, 0%, 0%, 0.25)),
-        url("5841f334bcf0e01a955e11aec3047301.jpg");
+        url("/5841f334bcf0e01a955e11aec3047301.jpg");
       background-size: 
         100% 100%,
         cover;
