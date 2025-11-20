@@ -26,11 +26,30 @@ const Admin1 = () => {
   const fetchMembers = async () => {
     const { data } = await supabase
       .from("profiles")
-      .select("*")
+      .select(`
+        *,
+        user_roles(role)
+      `)
       .order("total_points", { ascending: false });
 
-    if (data) {
-      setMembers(data);
+    // Filter for members: users whose highest role is 'member' or who have no role
+    const memberData = data?.filter(profile => {
+      const roles = profile.user_roles || [];
+      if (roles.length === 0) return true; // No role = default member
+      
+      // Get highest priority role (admin0 > admin1 > admin2 > member)
+      const roleHierarchy = { admin0: 1, admin1: 2, admin2: 3, member: 4 };
+      const highestRole = roles.reduce((highest, current) => {
+        const currentPriority = roleHierarchy[current.role] || 5;
+        const highestPriority = roleHierarchy[highest] || 5;
+        return currentPriority < highestPriority ? current.role : highest;
+      }, 'member');
+      
+      return highestRole === 'member';
+    });
+
+    if (memberData) {
+      setMembers(memberData);
     }
   };
 

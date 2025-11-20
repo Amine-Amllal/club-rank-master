@@ -60,13 +60,34 @@ const Dashboard = () => {
 
     
     const { data: leaderboardData } = await supabase
-      .from("profiles")
-      .select("*")
-      .order("total_points", { ascending: false })
-      .limit(5);
+      .from("user_roles")
+      .select(`
+        user_id,
+        role,
+        profiles!user_roles_user_id_fkey (
+          id,
+          email,
+          full_name,
+          avatar_url,
+          total_points
+        )
+      `)
+      .eq("role", "member");
 
-    if (leaderboardData) {
-      const rankedData = leaderboardData.map((member, index) => ({
+    // Transform data to match expected structure
+    const memberData = leaderboardData?.filter(item => item.profiles !== null)
+      .map(item => ({
+        id: item.profiles.id,
+        email: item.profiles.email,
+        full_name: item.profiles.full_name,
+        avatar_url: item.profiles.avatar_url,
+        total_points: item.profiles.total_points,
+      }))
+      .sort((a, b) => b.total_points - a.total_points)
+      .slice(0, 5);
+
+    if (memberData) {
+      const rankedData = memberData.map((member, index) => ({
         ...member,
         rank: index + 1,
       }));
