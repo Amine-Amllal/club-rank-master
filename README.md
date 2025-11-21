@@ -34,56 +34,6 @@ The GENOS Leaderboard is a web application designed to:
 - **Hosting**: Vercel
 - **Analytics**: Vercel Analytics
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+ and npm
-- Git
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone <YOUR_GIT_URL>
-cd club-rank-master
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Set up environment variables:
-Create a `.env.local` file with your Supabase credentials:
-```env
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
-
-4. Start the development server:
-```bash
-npm run dev
-```
-
-The application will be available at `http://localhost:8080`
-
-## Development
-
-```bash
-# Development server with hot reload
-npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
-
-# Lint code
-npm run lint
-```
-
 ## Project Structure
 
 ```
@@ -145,8 +95,8 @@ Copyright © 2025 GENOS - AI Club ENSAM Meknès. All rights reserved.
 ## Contact
 
 For questions or support:
-- Email: [Your club email]
-- GitHub: [Your repository]
+- Email: [amineamllal@gmail.com]
+- GitHub: (https://github.com/Amine-Amllal)
 
 ---
 
