@@ -63,22 +63,6 @@ This project includes comprehensive SEO features:
 - **Robots.txt**: Proper crawling directives
 - **Semantic HTML**: ARIA labels and proper heading hierarchy
 
-## Authentication
-
-Only users with `@edu.umi.ac.ma` email addresses can access the platform. Authentication is handled through Google OAuth via Supabase.
-
-## Deployment
-
-The application is configured for deployment on Vercel:
-
-```bash
-# Build the project
-npm run build
-
-# Deploy to Vercel
-vercel deploy
-```
-
 ## Contributing
 
 This is an internal project for GENOS members. If you're a member and want to contribute:
