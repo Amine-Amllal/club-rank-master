@@ -1,15 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Trophy, TrendingUp, TrendingDown, Calendar, User } from "lucide-react";
+import { ArrowLeft, Trophy, TrendingUp, TrendingDown, Calendar, User, MessageSquare, Edit } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { useSEO } from "@/hooks/useSEO";
 import { PAGE_SEO, generatePageMeta, generatePersonSchema } from "@/lib/seo-config";
+import EditProfileModal from "@/components/EditProfileModal";
+import ReviewModal from "@/components/ReviewModal";
+import ReviewsList from "@/components/ReviewsList";
 
 interface Profile {
   id: string;
@@ -33,12 +36,28 @@ interface ActivityWithPerformer extends Activity {
   performer_name?: string;
 }
 
+interface Review {
+  id: string;
+  user_id: string;
+  reviewer_id: string;
+  rating: number;
+  comment: string;
+  created_at: string;
+  reviewer_name?: string;
+  reviewer_avatar?: string | null;
+  reviewer_email?: string;
+}
+
 const Profile = () => {
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [activities, setActivities] = useState<ActivityWithPerformer[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [editProfileOpen, setEditProfileOpen] = useState(false);
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
 
   // SEO optimization for profile page
   const seoMeta = generatePageMeta({
@@ -55,9 +74,20 @@ const Profile = () => {
   });
 
   useEffect(() => {
+    const getCurrentUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setCurrentUserId(user.id);
+      }
+    };
+    getCurrentUser();
+  }, []);
+
+  useEffect(() => {
     if (userId) {
       fetchProfileData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   const fetchProfileData = async () => {
@@ -113,11 +143,58 @@ const Profile = () => {
 
         setActivities(activitiesWithPerformers);
       }
+
+      // Fetch reviews
+      await fetchReviews();
     } catch (error) {
       console.error("Error:", error);
       toast.error("An error occurred");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchReviews = async (): Promise<void> => {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any = await supabase
+        .from("reviews")
+        .select("*")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false });
+
+      const { data: reviewsData, error: reviewsError } = result;
+
+      if (reviewsError) {
+        console.error("Error fetching reviews:", reviewsError);
+        return;
+      }
+
+      if (reviewsData && reviewsData.length > 0) {
+        // Fetch reviewer profiles
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const reviewerIds = [...new Set(reviewsData.map((r: any) => r.reviewer_id))] as string[];
+        const { data: reviewersData } = await supabase
+          .from("profiles")
+          .select("id, full_name, avatar_url, email")
+          .in("id", reviewerIds);
+
+        const reviewersMap = new Map(
+          reviewersData?.map(r => [r.id, { name: r.full_name, avatar: r.avatar_url, email: r.email }]) || []
+        );
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const reviewsWithReviewerInfo = reviewsData.map((review: any) => ({
+          ...review,
+          reviewer_name: reviewersMap.get(review.reviewer_id)?.name,
+          reviewer_avatar: reviewersMap.get(review.reviewer_id)?.avatar,
+          reviewer_email: reviewersMap.get(review.reviewer_id)?.email,
+        }));
+
+        setReviews(reviewsWithReviewerInfo);
+      }
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
     }
   };
 
@@ -187,7 +264,7 @@ const Profile = () => {
                   </h2>
                   <p className="text-muted-foreground mb-4">{profile.email}</p>
                   
-                  <div className="flex flex-wrap gap-4 justify-center md:justify-start">
+                  <div className="flex flex-wrap gap-4 justify-center md:justify-start mb-6">
                     <div className="flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-lg">
                       <Trophy className="h-5 w-5 text-accent" />
                       <div>
@@ -204,6 +281,29 @@ const Profile = () => {
                         </p>
                       </div>
                     </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-wrap gap-3 justify-center md:justify-start">
+                    {currentUserId === userId && (
+                      <Button
+                        onClick={() => setEditProfileOpen(true)}
+                        variant="outline"
+                        size="sm"
+                      >
+                        <Edit className="mr-2 h-4 w-4" />
+                        Edit Profile
+                      </Button>
+                    )}
+                    {currentUserId !== userId && currentUserId && (
+                      <Button
+                        onClick={() => setReviewModalOpen(true)}
+                        size="sm"
+                      >
+                        <MessageSquare className="mr-2 h-4 w-4" />
+                        Write Review
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -273,8 +373,47 @@ const Profile = () => {
               )}
             </CardContent>
           </Card>
+
+          {/* Reviews Card */}
+          <Card className="shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MessageSquare className="h-5 w-5 text-accent" />
+                Reviews ({reviews.length})
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ReviewsList reviews={reviews} />
+            </CardContent>
+          </Card>
         </div>
       </main>
+
+      {/* Edit Profile Modal */}
+      <EditProfileModal
+        open={editProfileOpen}
+        onOpenChange={setEditProfileOpen}
+        userId={userId!}
+        currentName={profile.full_name}
+        currentAvatarUrl={profile.avatar_url}
+        email={profile.email}
+        onSave={(name, avatarUrl) => {
+          setProfile({
+            ...profile,
+            full_name: name,
+            avatar_url: avatarUrl,
+          });
+        }}
+      />
+
+      {/* Review Modal */}
+      <ReviewModal
+        open={reviewModalOpen}
+        onOpenChange={setReviewModalOpen}
+        targetUserId={userId!}
+        reviewerId={currentUserId!}
+        onReviewAdded={fetchReviews}
+      />
     </div>
   );
 };

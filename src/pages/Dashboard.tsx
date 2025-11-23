@@ -4,11 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Trophy, TrendingUp, LogOut, Crown, Medal, Award, Settings } from "lucide-react";
+import { Trophy, TrendingUp, LogOut, Crown, Medal, Award, Settings, Edit } from "lucide-react";
 import { toast } from "sonner";
 import type { Database } from "@/integrations/supabase/types";
 import { useSEO } from "@/hooks/useSEO";
 import { PAGE_SEO, generatePageMeta } from "@/lib/seo-config";
+import EditProfileModal from "@/components/EditProfileModal";
 
 interface Profile {
   id: string;
@@ -28,6 +29,7 @@ const Dashboard = () => {
   const [topMembers, setTopMembers] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<Database["public"]["Enums"]["app_role"] | null>(null);
+  const [editProfileOpen, setEditProfileOpen] = useState(false);
 
   // SEO optimization for dashboard page
   const seoMeta = generatePageMeta(PAGE_SEO.dashboard);
@@ -252,11 +254,21 @@ const Dashboard = () => {
           <div className="grid gap-6 md:grid-cols-2">
            
             <Card className="shadow-lg">
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0">
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5 text-accent" />
                   Your Profile
                 </CardTitle>
+                <Button
+                  onClick={() => setEditProfileOpen(true)}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  aria-label="Edit profile"
+                >
+                  <Edit className="h-4 w-4" />
+                  Edit
+                </Button>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center gap-4">
@@ -332,6 +344,25 @@ const Dashboard = () => {
           </div>
         </div>
       </main>
+
+      {/* Edit Profile Modal */}
+      {profile && (
+        <EditProfileModal
+          open={editProfileOpen}
+          onOpenChange={setEditProfileOpen}
+          userId={profile.id}
+          currentName={profile.full_name}
+          currentAvatarUrl={profile.avatar_url}
+          email={profile.email}
+          onSave={(name, avatarUrl) => {
+            setProfile({
+              ...profile,
+              full_name: name,
+              avatar_url: avatarUrl,
+            });
+          }}
+        />
+      )}
     </div>
   );
 };
