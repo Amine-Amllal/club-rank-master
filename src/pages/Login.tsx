@@ -47,13 +47,11 @@ const Login = () => {
           }
         }
 
-        // Check if user has a role
+        // Check if user has a role (unique constraint ensures max one role per user)
         const { data: roleData } = await supabase
           .from("user_roles")
           .select("role")
           .eq("user_id", session.user.id)
-          .order("role", { ascending: true })
-          .limit(1)
           .single();
 
         // If no role exists, assign default "member" role
@@ -113,13 +111,11 @@ const Login = () => {
               }
             }
 
-            // Check if user has a role
+            // Check if user has a role (unique constraint ensures max one role per user)
             const { data: roleData } = await supabase
               .from("user_roles")
               .select("role")
               .eq("user_id", session.user.id)
-              .order("role", { ascending: true })
-              .limit(1)
               .single();
 
             // If no role exists, assign default "member" role

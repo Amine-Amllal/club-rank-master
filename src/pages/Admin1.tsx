@@ -24,29 +24,37 @@ const Admin1 = () => {
   }, []);
 
   const fetchMembers = async () => {
-    const { data } = await supabase
-      .from("profiles")
+    // Query profiles and their role (unique constraint ensures one role per user)
+    const { data, error } = await supabase
+      .from("user_roles")
       .select(`
-        *,
-        user_roles(role)
+        user_id,
+        role,
+        profiles!user_roles_user_id_fkey (
+          id,
+          email,
+          full_name,
+          total_points
+        )
       `)
-      .order("total_points", { ascending: false });
+      .eq("role", "member");
 
-    // Filter for members: users whose highest role is 'member' or who have no role
-    const memberData = data?.filter(profile => {
-      const roles = profile.user_roles || [];
-      if (roles.length === 0) return true; // No role = default member
-      
-      // Get highest priority role (admin0 > admin1 > admin2 > member)
-      const roleHierarchy = { admin0: 1, admin1: 2, admin2: 3, member: 4 };
-      const highestRole = roles.reduce((highest, current) => {
-        const currentPriority = roleHierarchy[current.role] || 5;
-        const highestPriority = roleHierarchy[highest] || 5;
-        return currentPriority < highestPriority ? current.role : highest;
-      }, 'member');
-      
-      return highestRole === 'member';
-    });
+    if (error) {
+      console.error("Error fetching members:", error);
+      toast.error("Failed to load members");
+      return;
+    }
+
+    // Transform data to match Profile interface
+    const memberData = data
+      ?.filter(item => item.profiles !== null)
+      .map(item => ({
+        id: item.profiles.id,
+        email: item.profiles.email,
+        full_name: item.profiles.full_name,
+        total_points: item.profiles.total_points,
+      }))
+      .sort((a, b) => b.total_points - a.total_points);
 
     if (memberData) {
       setMembers(memberData);

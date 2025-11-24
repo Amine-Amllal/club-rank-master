@@ -28,8 +28,6 @@ export const ProtectedRoute = ({
           .from("user_roles")
           .select("role")
           .eq("user_id", session.user.id)
-          .order("role", { ascending: true })
-          .limit(1)
           .single();
 
         setUserRole(roleData?.role ?? null);
@@ -50,8 +48,6 @@ export const ProtectedRoute = ({
               .from("user_roles")
               .select("role")
               .eq("user_id", session.user.id)
-              .order("role", { ascending: true })
-              .limit(1)
               .single();
 
             setUserRole(roleData?.role ?? null);
