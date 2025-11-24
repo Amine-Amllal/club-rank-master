@@ -20,6 +20,34 @@ const Login = () => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
+        // Check if profile exists
+        const { data: profileData } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("id", session.user.id)
+          .single();
+
+        // If no profile exists, create one (handles re-sign-in after deletion)
+        if (!profileData) {
+          const { error: profileError } = await supabase
+            .from("profiles")
+            .insert({
+              id: session.user.id,
+              email: session.user.email || "",
+              full_name: session.user.user_metadata.full_name || session.user.user_metadata.name || null,
+              avatar_url: session.user.user_metadata.avatar_url || null,
+              points: 0,
+            });
+
+          if (profileError) {
+            console.error("Error creating profile:", profileError);
+            toast.error("Failed to create profile. Please try again.");
+            await supabase.auth.signOut();
+            return;
+          }
+        }
+
+        // Check if user has a role
         const { data: roleData } = await supabase
           .from("user_roles")
           .select("role")
@@ -28,7 +56,27 @@ const Login = () => {
           .limit(1)
           .single();
 
-        redirectBasedOnRole(roleData?.role);
+        // If no role exists, assign default "member" role
+        if (!roleData) {
+          const { error: roleError } = await supabase
+            .from("user_roles")
+            .insert({
+              user_id: session.user.id,
+              role: "member",
+            });
+
+          if (roleError) {
+            console.error("Error creating role:", roleError);
+            toast.error("Failed to assign role. Please try again.");
+            await supabase.auth.signOut();
+            return;
+          }
+
+          // Redirect as member
+          redirectBasedOnRole("member");
+        } else {
+          redirectBasedOnRole(roleData.role);
+        }
       }
     };
 
@@ -38,6 +86,34 @@ const Login = () => {
       async (event, session) => {
         if (session?.user) {
           setTimeout(async () => {
+            // Check if profile exists
+            const { data: profileData } = await supabase
+              .from("profiles")
+              .select("id")
+              .eq("id", session.user.id)
+              .single();
+
+            // If no profile exists, create one
+            if (!profileData) {
+              const { error: profileError } = await supabase
+                .from("profiles")
+                .insert({
+                  id: session.user.id,
+                  email: session.user.email || "",
+                  full_name: session.user.user_metadata.full_name || session.user.user_metadata.name || null,
+                  avatar_url: session.user.user_metadata.avatar_url || null,
+                  points: 0,
+                });
+
+              if (profileError) {
+                console.error("Error creating profile:", profileError);
+                toast.error("Failed to create profile. Please try again.");
+                await supabase.auth.signOut();
+                return;
+              }
+            }
+
+            // Check if user has a role
             const { data: roleData } = await supabase
               .from("user_roles")
               .select("role")
@@ -46,7 +122,26 @@ const Login = () => {
               .limit(1)
               .single();
 
-            redirectBasedOnRole(roleData?.role);
+            // If no role exists, assign default "member" role
+            if (!roleData) {
+              const { error: roleError } = await supabase
+                .from("user_roles")
+                .insert({
+                  user_id: session.user.id,
+                  role: "member",
+                });
+
+              if (roleError) {
+                console.error("Error creating role:", roleError);
+                toast.error("Failed to assign role. Please try again.");
+                await supabase.auth.signOut();
+                return;
+              }
+
+              redirectBasedOnRole("member");
+            } else {
+              redirectBasedOnRole(roleData.role);
+            }
           }, 0);
         }
       }
