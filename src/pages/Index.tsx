@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Trophy, Users, TrendingUp, Star } from "lucide-react";
 import { useSEO } from "@/hooks/useSEO";
 import { PAGE_SEO, generatePageMeta } from "@/lib/seo-config";
+import Footer from "@/components/Footer";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -130,14 +131,7 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t-2 border-primary/30 bg-card/30 backdrop-blur-sm py-8 px-6" role="contentinfo">
-        <div className="container mx-auto text-center text-sm text-muted-foreground uppercase tracking-wider">
-          <p>&copy; 2025 GENOS - AI Club ENSAM Meknès. ALL RIGHTS RESERVED.</p>
-          <p className="mt-2 text-xs">
-            Gamified leaderboard platform for AI enthusiasts and engineering students
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
