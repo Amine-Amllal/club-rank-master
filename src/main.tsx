@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 // Create magical particles for background effect
 function createParticles() {
@@ -20,4 +21,9 @@ function createParticles() {
 
 createParticles();
 
-createRoot(document.getElementById("root")!).render(<App />);
+createRoot(document.getElementById("root")!).render(
+  <>
+    <App />
+    <SpeedInsights />
+  </>
+);
