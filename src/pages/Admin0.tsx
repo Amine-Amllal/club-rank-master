@@ -283,9 +283,10 @@ const Admin0 = () => {
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="member">Member</SelectItem>
-                              <SelectItem value="admin2">Admin2</SelectItem>
+                              <SelectItem value="admin0" disabled>Admin0</SelectItem>
                               <SelectItem value="admin1">Admin1</SelectItem>
+                              <SelectItem value="admin2">Admin2</SelectItem>
+                              <SelectItem value="member">Member</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
